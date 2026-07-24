@@ -11,7 +11,7 @@ export default function Header(){
                     <Link className="text-amber-800 hover:text-amber-950 transition-colors" href="/">
                         Início
                     </Link>
-                    <Link className="text-amber-800 hover:text-amber-950 transition-colors" href="/">
+                    <Link className="text-amber-800 hover:text-amber-950 transition-colors" href="/receitas">
                         Receitas
                     </Link>
                 </nav>
