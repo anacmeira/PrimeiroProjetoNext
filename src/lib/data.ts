@@ -182,6 +182,94 @@ export const recipes: Recipe[] = [
       "Leve ao forno por cerca de 25 a 30 minutos ou até que a base esteja dourada e o topo comece a rachar levemente. Sirva morna!"
     ],
     category: "Café da Tarde"
+  },
+
+  {
+    id: "7",
+    title: "Vaca Atolada Tradicional",
+    description: "Costela de boi cozida lentamente com mandioca bem macia, quase desmanchando. Um caldo espesso, suculento e cheio de tempero mineiro.",
+    image: "/receitas/vaca-atolada.png",
+    prepTime: "25 minutos",
+    cookTime: "50 minutos",
+    servings: 6,
+    ingredients: [
+      "1kg de costela bovina cortada em pedaços",
+      "800g de mandioca descascada e picada em pedaços médios",
+      "1 cebola grande picada",
+      "4 dentes de alho amassados",
+      "2 tomates maduros picados (sem sementes)",
+      "1 colher de sopa de colorau",
+      "2 colheres de sopa de óleo ou banha de porco",
+      "Cheiro-verde picado a gosto",
+      "Sal e pimenta-do-reino a gosto"
+    ],
+    instructions: [
+      "Tempere a costela com o alho, sal e pimenta-do-reino.",
+      "Em uma panela de pressão, aqueça o óleo ou banha e doure a costela muito bem de todos os lados.",
+      "Adicione a cebola, o tomate e o colorau, refogando até murcharem.",
+      "Cubra a carne com água fervente, feche a panela de pressão e cozinhe por 35 minutos após pegar pressão.",
+      "Desligue a pressão, abra a panela e adicione os pedaços de mandioca.",
+      "Se necessário, adicione mais água quente para cobrir a mandioca. Feche a panela novamente e cozinhe por mais 15 minutos na pressão.",
+      "Deixe a pressão sair naturalmente. A mandioca deve estar derretendo e o caldo bem grosso.",
+      "Ajuste o sal, salpique bastante cheiro-verde e sirva com arroz branco bem soltinho!"
+    ],
+    category: "Prato Principal"
+  },
+  {
+    id: "8",
+    title: "Ambrosia Mineira do Tacho",
+    description: "O famoso doce dos deuses. Leite talhado lentamente com açúcar, canela e cravo, formando gruminhos macios e suculentos na calda.",
+    image: "/receitas/ambrosia.png",
+    prepTime: "15 minutos",
+    cookTime: "45 minutos",
+    servings: 10,
+    ingredients: [
+      "1 litro de leite integral",
+      "2 xícaras de açúcar",
+      "4 ovos",
+      "Suco de 1 limão (para talhar o leite)",
+      "2 paus de canela",
+      "5 cravos-da-índia",
+      "Casca de 1/2 laranja (opcional para dar aroma)"
+    ],
+    instructions: [
+      "Em uma panela de fundo grosso, coloque o açúcar, a canela, os cravos e a casca de laranja. Leve ao fogo médio até o açúcar derreter levemente sem queimar.",
+      "Junte o leite e mexa até o açúcar dissolver por completo.",
+      "Em uma tigela, bata ligeiramente os ovos apenas para misturar as gemas e claras.",
+      "Despeje os ovos batidos e o suco de limão na panela de leite bem quente.",
+      "IMPORTANTE: Não mexa muito! Apenas dê leves empurrõezinhos com a colher de pau para que o leite talhe e forme os grumos característicos da ambrosia.",
+      "Deixe cozinhar em fogo baixo por cerca de 35 a 40 minutos, até que a calda reduza e fique amarelada/dourada.",
+      "Retire os cravos e a canela se preferir, deixe esfriar e leve à geladeira antes de servir."
+    ],
+    category: "Sobremesa"
+  },
+  {
+    id: "9",
+    title: "Bolo de Fubá Cremoso com Queijo",
+    description: "Bolo prático de liquidificador que se divide sozinho no forno: uma camada cremosa parecida com pudim no meio e bolo fofinho por fora.",
+    image: "/receitas/bolo-fuba-cremoso.png",
+    prepTime: "10 minutos",
+    cookTime: "40 minutos",
+    servings: 12,
+    ingredients: [
+      "3 ovos",
+      "2 xícaras de açúcar",
+      "1 xícara de fubá mimoso",
+      "3 colheres de sopa de farinha de trigo",
+      "2 colheres de sopa de manteiga",
+      "4 xícaras de leite integral",
+      "50g de queijo meia-cura ou parmesão ralado",
+      "1 colher de sopa de fermento químico em pó"
+    ],
+    instructions: [
+      "No liquidificador, bata os ovos, o açúcar, a manteiga e o leite até obter uma mistura líquida homogênea.",
+      "Adicione o fubá, a farinha de trigo e o queijo ralado. Bata novamente por 2 minutos.",
+      "Por último, adicione o fermento e use a função 'Pulsar' apenas para misturar delicadamente (a massa fica bem líquida mesmo, é normal!).",
+      "Despeje a massa em uma fôrma retangular ou redonda untada com manteiga e polvilhada com fubá.",
+      "Asse em forno preaquecido a 180°C por cerca de 40 a 45 minutos, ou até que o topo esteja levemente dourado.",
+      "Deixe amornar totalmente antes de cortar para que a camada cremosa do meio crie consistência."
+    ],
+    category: "Café da Tarde"
   }
 
 ]
