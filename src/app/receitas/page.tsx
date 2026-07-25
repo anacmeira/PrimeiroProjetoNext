@@ -47,24 +47,28 @@ export default function ReceitasPage() {
     setIsRecipeModalOpen(false);
   };
 
-  // Salva apenas no Estado local (Criação e Edição local)
-  const handleSaveRecipe = (recipeData: Omit<Recipe, "id"> | Recipe) => {
-    if (modalMode === "create") {
-      const newRecipe: Recipe = {
-        ...(recipeData as Recipe),
-        id: String(Date.now()), // Gera um ID temporário local
-      };
-      setRecipeList((prev) => [...prev, newRecipe]);
-    } else {
-      const updatedRecipe = recipeData as Recipe;
-      setRecipeList((prev) =>
-        prev.map((recipe) =>
-          recipe.id === updatedRecipe.id ? updatedRecipe : recipe
-        )
-      );
-    }
+  const handleSaveRecipe = async (recipeData: Omit<Recipe, "id"> | Recipe) => {
+    try {
+      if (modalMode === "create") {
+        const response = await api.post("/api/recipes", recipeData);
+        const newRecipe = response.data;
+        setRecipeList((prev) => [...prev, newRecipe]);
+      } else {
+        // Modo "edit"
+        const updatedRecipe = recipeData as Recipe;
 
-    handleCloseModal();
+        await api.put(`/api/recipes/${updatedRecipe.id}`, updatedRecipe);
+        setRecipeList((prev) =>
+          prev.map((recipe) =>
+            recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+          )
+        );
+      }
+
+      handleCloseModal();
+    } catch (error) {
+      console.error("Erro ao salvar a receita:", error);
+    }
   };
 
   const handleOpenDeleteConfirmationModal = (recipe: Recipe) => {
