@@ -1,18 +1,63 @@
-import { recipes } from "@/lib/data";
+"use client";
+
+import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { notFound } from "next/navigation";
+import type { Recipe } from "@/lib/data";
+import api from "@/lib/api";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function RecipeDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const recipe = recipes.find((r) => r.id === id);
+export default function RecipeDetailPage({ params }: PageProps) {
+  const resolvedParams = use(params);
+  const id = resolvedParams.id;
 
-  if (!recipe) {
-    notFound();
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function fetchRecipe() {
+      try {
+        setLoading(true);
+        const response = await api.get(`/api/recipes/${id}`);
+        setRecipe(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar detalhes da receita:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) {
+      fetchRecipe();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="flex-grow bg-amber-50/30 py-12 px-4 flex justify-center items-center">
+        <p className="text-amber-950 font-semibold text-sm">Carregando receita...</p>
+      </main>
+    );
+  }
+
+  if (error || !recipe) {
+    return (
+      <main className="flex-grow bg-amber-50/30 py-12 px-4 text-center">
+        <h1 className="text-2xl font-bold text-amber-950 mb-4">Receita não encontrada</h1>
+        <Link 
+          href="/receitas" 
+          className="inline-flex items-center gap-1 text-xs font-semibold text-amber-800 hover:text-amber-950"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          Voltar para receitas
+        </Link>
+      </main>
+    );
   }
 
   return (
@@ -27,13 +72,15 @@ export default async function RecipeDetailPage({ params }: PageProps) {
           Voltar para receitas
         </Link>
 
-        <div className="w-full h-48 sm:h-64 md:h-[350px] rounded-xl overflow-hidden mb-6 shadow-sm border border-amber-200/40 bg-amber-100">
-          <img 
-            src={recipe.image} 
-            alt={recipe.title} 
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {recipe.image && (
+          <div className="w-full h-48 sm:h-64 md:h-[350px] rounded-xl overflow-hidden mb-6 shadow-sm border border-amber-200/40 bg-amber-100">
+            <img 
+              src={recipe.image} 
+              alt={recipe.title} 
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
 
         {/* Informações básicas */}
         <div className="mb-8">
@@ -66,36 +113,36 @@ export default async function RecipeDetailPage({ params }: PageProps) {
 
         <div className="flex flex-col md:flex-row gap-8 pt-6 border-t border-amber-200/40 w-full">
           
-          {/*Ingredientes*/}
+          {/* Ingredientes */}
           <div className="w-full md:w-[40%]">
             <h2 className="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">
               <span className="w-1.5 h-4 bg-amber-700 rounded-full inline-block"></span>
               Ingredientes
             </h2>
             <ul className="space-y-3">
-              {recipe.ingredients.map((ingredient: string, index: number) => (
+              {recipe.ingredients?.map((item, index) => (
                 <li key={index} className="flex items-start gap-2.5 text-xs sm:text-sm text-amber-900/90 leading-relaxed">
                   <span className="text-amber-700 font-bold text-sm leading-none mt-0.5">•</span>
-                  <span>{ingredient}</span>
+                  <span>{typeof item === "string" ? item : item.value}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Coluna da Direita: Modo de Preparo (Mais larga no desktop) */}
+          {/* Modo de Preparo */}
           <div className="w-full md:w-[60%]">
             <h2 className="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">
               <span className="w-1.5 h-4 bg-amber-700 rounded-full inline-block"></span>
               Modo de Preparo
             </h2>
             <ol className="space-y-4">
-              {recipe.instructions.map((step: string, index: number) => (
+              {recipe.instructions?.map((step, index) => (
                 <li key={index} className="flex gap-3.5 items-start">
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-100/80 text-amber-900 text-[10px] font-bold flex items-center justify-center mt-0.5">
                     {index + 1}
                   </span>
                   <p className="text-xs sm:text-sm text-amber-900/90 leading-relaxed">
-                    {step}
+                    {typeof step === "string" ? step : step.value}
                   </p>
                 </li>
               ))}

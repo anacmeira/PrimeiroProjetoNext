@@ -1,14 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { recipes as initialRecipes, Recipe } from "@/lib/data"; 
+import type { Recipe } from "@/lib/data"; 
 import RecipeCard from "@/components/RecipeCard"; 
+import api from "@/lib/api";
 
 export default function Home() {
-  const [recipesList] = useState<Recipe[]>(initialRecipes);
-  const featuredRecipes = recipesList.slice(0, 3);
+  const [recipesList, setRecipesList] = useState<Recipe[]>([]);
+
+  useEffect(() => {
+    async function fetchRecipes() {
+      try {
+        const response = await api.get("/api/recipes");
+        
+        const data = Array.isArray(response.data) ? response.data : response.data?.recipes || [];
+        setRecipesList(data);
+      } catch (error) {
+        console.error("Erro ao carregar receitas na Home:", error);
+        setRecipesList([]); 
+      }
+    }
+
+    fetchRecipes();
+  }, []);
+
+  const safeRecipes = Array.isArray(recipesList) ? recipesList : [];
+  const featuredRecipes = safeRecipes.slice(0, 3);
 
   return (
     <main className="flex-grow bg-amber-50/40">
@@ -53,6 +72,8 @@ export default function Home() {
               />
             ))}
           </div>
+
+         
         </div>
       </section>
     </main>

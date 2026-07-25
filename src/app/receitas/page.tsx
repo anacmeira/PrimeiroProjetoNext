@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeFormModal from "@/components/RecipeFormModal";
-import { recipes as initialRecipes, Recipe } from "@/lib/data";
+import type { Recipe } from "@/lib/data";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import api from "@/lib/api";
 
@@ -14,19 +14,22 @@ export default function ReceitasPage() {
   const [recipeList, setRecipeList] = useState<Recipe[]>([]);
   const [modalMode, setMoldalMode] = useState<"create" | "edit">("create");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(undefined);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchRecipes =async () => {
+    const fetchRecipes = async () => {
       try {
-        const response = await api.get("/recipes")
-        setRecipeList(response.data)
-      } catch(error){
-        console.error("Erro ao requisitar as receitas, error")
+        const response = await api.get("/api/recipes");
+        
+        const data = Array.isArray(response.data) ? response.data : response.data?.recipes || [];
+        setRecipeList(data);
+      } catch (error) {
+        console.error("Erro ao requisitar as receitas:", error);
+        setRecipeList([]); 
       }
-    }
-  }, [])
-
-  const [searchTerm, setSearchTerm] = useState("");
+    };
+    fetchRecipes();
+  }, []);
 
   const handleOpenCreateModal = () => {
     setMoldalMode("create");
@@ -44,22 +47,23 @@ export default function ReceitasPage() {
     setIsRecipeModalOpen(false);
   };
 
-  const handleSaveRecipe = (newRecipeData: Omit<Recipe, "id"> | Recipe) => {
+  // Salva apenas no Estado local (Criação e Edição local)
+  const handleSaveRecipe = (recipeData: Omit<Recipe, "id"> | Recipe) => {
     if (modalMode === "create") {
       const newRecipe: Recipe = {
-        ...newRecipeData,
-        id: "id" in newRecipeData ? newRecipeData.id : String(Date.now()),
+        ...(recipeData as Recipe),
+        id: String(Date.now()), // Gera um ID temporário local
       };
       setRecipeList((prev) => [...prev, newRecipe]);
     } else {
-      {/*Modo "edit"*/}
-      const updatedRecipe = newRecipeData as Recipe;
+      const updatedRecipe = recipeData as Recipe;
       setRecipeList((prev) =>
         prev.map((recipe) =>
           recipe.id === updatedRecipe.id ? updatedRecipe : recipe
         )
       );
     }
+
     handleCloseModal();
   };
 
@@ -76,13 +80,14 @@ export default function ReceitasPage() {
     }
   };
 
-  {/*função para filtrar as receitas*/}
-  const filteredRecipes = recipeList.filter((recipe) => {
+  const safeRecipeList = Array.isArray(recipeList) ? recipeList : [];
+  
+  const filteredRecipes = safeRecipeList.filter((recipe) => {
     const term = searchTerm.toLowerCase();
-    return (
-      recipe.title.toLowerCase().includes(term) ||
-      recipe.category.toLowerCase().includes(term)
-    );
+    const title = recipe?.title?.toLowerCase() || "";
+    const category = recipe?.category?.toLowerCase() || "";
+    
+    return title.includes(term) || category.includes(term);
   });
 
   return (
@@ -109,7 +114,7 @@ export default function ReceitasPage() {
           Explore o caderno completo de delícias mineiras, do salgado ao doce tradicional.
         </p>
 
-        {/*Barra de pesquisa*/}
+        {/* Barra de pesquisa */}
         <div className="relative max-w-md mx-auto sm:mx-0 mb-8">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-700/60">
             <Search size={18} />
@@ -137,13 +142,15 @@ export default function ReceitasPage() {
           </div>
         ) : (
           <div className="py-12 text-center text-amber-900/60">
-            <p className="text-sm font-medium">Nenhuma receita encontrada para "{searchTerm}".</p>
+            <p className="text-sm font-medium">
+              {searchTerm ? `Nenhuma receita encontrada para "${searchTerm}".` : "Nenhuma receita cadastrada."}
+            </p>
           </div>
         )}
         
       </div>
 
-      {/*Modal com as props*/}
+      {/* Modal com as props */}
       <RecipeFormModal 
         isOpen={isRecipeModalOpen} 
         onClose={handleCloseModal} 
@@ -152,7 +159,7 @@ export default function ReceitasPage() {
         recipe={selectedRecipe}
       />
 
-      {/*Modal para delete*/}
+      {/* Modal para delete */}
       <DeleteConfirmationModal
         isOpen={isDeleteConfirmationModalOpen}
         onClose={() => setIsDeleteConfirmationModalOpen(false)}
