@@ -64,7 +64,7 @@ export default function RecipeFormModal({
     name: "instructions",
   });
 
-  // Função  para fechar o modal
+  // Função para fechar o modal
   const handleSafeClose = () => {
     if (typeof onClose === "function") {
       onClose();
@@ -73,40 +73,35 @@ export default function RecipeFormModal({
     }
   };
 
- 
   useEffect(() => {
-  if (isOpen) {
-    if (mode === "edit" && recipe) {
-      reset({
-        ...recipe,
-        imageURL: recipe.image || "",
-        ingredients: recipe.ingredients.map((ing) => ({ value: ing })),
-        instructions: recipe.instructions.map((inst) => ({ value: inst })),
-      });
-    } else {
-      reset(DEFAULT_VALUES);
+    if (isOpen) {
+      if (mode === "edit" && recipe) {
+        reset({
+          ...recipe,
+          imageURL: recipe.image || "",
+          ingredients: recipe.ingredients.map((ing) => ({ value: ing.value })),
+          instructions: recipe.instructions.map((inst) => ({ value: inst.value })),
+        });
+      } else {
+        reset(DEFAULT_VALUES);
+      }
     }
-  }
-}, [mode, isOpen, recipe, reset]);
+  }, [mode, isOpen, recipe, reset]);
 
   const onSubmit: SubmitHandler<RecipeFormData> = (data) => {
-    const { imageURL, ingredients, instructions, ...restData } = data;
+    const { imageURL, ...restData } = data;
 
-    const recipeData = {
+    const formattedRecipe = {
       ...restData,
       image: imageURL,
-      ingredients: (ingredients ?? [])
-        .map((ingredient) => ingredient.value.trim())
-        .filter((val) => val !== ""),
-      instructions: (instructions ?? [])
-        .map((instruction) => instruction.value.trim())
-        .filter((val) => val !== ""),
     };
 
     // Chamada segura do onSave
     if (typeof onSave === "function") {
       onSave(
-        mode === "edit" && recipe ? { ...recipeData, id: recipe.id } : recipeData
+        mode === "edit" && recipe
+          ? { ...formattedRecipe, id: recipe.id }
+          : formattedRecipe
       );
     } else {
       console.error("RecipeFormModal: A prop 'onSave' não é uma função válida.");
@@ -135,7 +130,7 @@ export default function RecipeFormModal({
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6 mt-3 text-left"
           noValidate
->
+        >
           {/* Título e Categoria */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             <div className="flex flex-col">
