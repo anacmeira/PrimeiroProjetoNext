@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
+import { toast } from "sonner";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeFormModal from "@/components/RecipeFormModal";
 import type { Recipe } from "@/lib/data";
@@ -25,6 +26,7 @@ export default function ReceitasPage() {
         setRecipeList(data);
       } catch (error) {
         console.error("Erro ao requisitar as receitas:", error);
+        toast.error("Nao foi possivel carregar a lista de receitas.");
         setRecipeList([]); 
       }
     };
@@ -53,6 +55,7 @@ export default function ReceitasPage() {
         const response = await api.post("/api/recipes", recipeData);
         const newRecipe = response.data;
         setRecipeList((prev) => [...prev, newRecipe]);
+        toast.success("Receita criada com sucesso.");
       } else {
         // Modo "edit"
         const updatedRecipe = recipeData as Recipe;
@@ -63,11 +66,17 @@ export default function ReceitasPage() {
             recipe.id === updatedRecipe.id ? updatedRecipe : recipe
           )
         );
+        toast.success("Receita atualizada com sucesso.");
       }
 
       handleCloseModal();
     } catch (error) {
-      console.error("Erro ao salvar a receita:", error);
+      console.error(`Erro ao ${modalMode === "create" ? "criar" : "editar"} a receita`, error);
+      toast.error(
+        modalMode === "create" 
+          ? "Nao foi possivel criar a receita." 
+          : "Nao foi possivel atualizar a receita."
+      );
     }
   };
 
@@ -76,11 +85,22 @@ export default function ReceitasPage() {
     setIsDeleteConfirmationModalOpen(true);
   };
 
-  const handleDeleteRecipe = () => {
-    if (selectedRecipe) {
-      setRecipeList((prev) => prev.filter((recipe) => recipe.id !== selectedRecipe.id));
-      setIsDeleteConfirmationModalOpen(false);
-      setSelectedRecipe(undefined);
+  const handleDeleteRecipe = async () => {
+    try {
+      if (selectedRecipe) {
+        await api.delete(`/api/recipes/${selectedRecipe.id}`);
+
+        setRecipeList((prev) =>
+          prev.filter((recipe) => recipe.id !== selectedRecipe.id)
+        );
+
+        toast.success("Receita excluida com sucesso.");
+        setIsDeleteConfirmationModalOpen(false);
+        setSelectedRecipe(undefined);
+      }
+    } catch (error) {
+      console.error("Erro ao deletar receita", error);
+      toast.error("Nao foi possivel excluir a receita.");
     }
   };
 
@@ -115,7 +135,7 @@ export default function ReceitasPage() {
         </div>
         
         <p className="text-sm text-amber-900/80 font-medium mb-6 max-w-xl mx-auto text-center sm:text-left">
-          Explore o caderno completo de delícias mineiras, do salgado ao doce tradicional.
+          Explore o caderno completo de delicias mineiras, do salgado ao doce tradicional.
         </p>
 
         {/* Barra de pesquisa */}
