@@ -67,7 +67,7 @@ export default function ReceitasPage() {
 
       handleCloseModal();
     } catch (error) {
-      console.error("Erro ao salvar a receita:", error);
+      console.error('Erro ao ${modalMode === "create" ? "criar" : "editar"} a receita', error);
     }
   };
 
