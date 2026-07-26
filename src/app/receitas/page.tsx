@@ -67,7 +67,7 @@ export default function ReceitasPage() {
 
       handleCloseModal();
     } catch (error) {
-      console.error('Erro ao ${modalMode === "create" ? "criar" : "editar"} a receita', error);
+      console.error(`Erro ao ${modalMode === "create" ? "criar" : "editar"} a receita`, error);
     }
   };
 
@@ -79,7 +79,7 @@ export default function ReceitasPage() {
   const handleDeleteRecipe = async () => {
     try {
       if (selectedRecipe) {
-        await api.delete(`/recipes/${selectedRecipe.id}`);
+        await api.delete(`/api/recipes/${selectedRecipe.id}`);
 
         setRecipeList((prev) =>
           prev.filter((recipe) => recipe.id !== selectedRecipe.id)
