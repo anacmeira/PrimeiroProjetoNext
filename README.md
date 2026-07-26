@@ -34,12 +34,12 @@ A identidade visual foi completamente customizada para fugir dos padrões óbvio
 
 ---
 
-## 🛠️ Backend e Integração com API
+## Backend e Integração com API
 
 O projeto consome uma API REST para realizar as operações de leitura, criação, edição e exclusão (CRUD) das receitas.
 
 * **Base do Backend:** API desenvolvida originalmente por Talles Morais.
-* **Versão original da API:** [[Repositório da API de Receitas](https://github.com/talles-morais/receitas-byron.git)
+* **Versão original da API:** [Repositório da API de Receitas](https://github.com/talles-morais/receitas-byron.git)
 * **Versão Modificada com as receitas:** [Repositório da API de Receitas Mineiras](https://github.com/anacmeira/api-receitas-mineiras.git)
 * **Repositório do Frontend (Site):** [Repositório do Site Receitas de Minas](https://github.com/anacmeira/Receitas.git)
 
