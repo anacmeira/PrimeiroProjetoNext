@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import type { Recipe } from "@/lib/data"; 
 import RecipeCard from "@/components/RecipeCard"; 
 import api from "@/lib/api";
@@ -19,6 +20,7 @@ export default function Home() {
         setRecipesList(data);
       } catch (error) {
         console.error("Erro ao carregar receitas na Home:", error);
+        toast.error("Nao foi possivel carregar as receitas em destaque.");
         setRecipesList([]); 
       }
     }
@@ -73,7 +75,6 @@ export default function Home() {
             ))}
           </div>
 
-         
         </div>
       </section>
     </main>
